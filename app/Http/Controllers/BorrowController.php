@@ -43,7 +43,7 @@ class BorrowController extends Controller
         ]);
         $tanggal_peminjaman = date('Y-m-d');
 
-        $tanggal_pengembalian = date('Y-m-d', strtotime('+1 day', strtotime($tanggal_peminjaman)));
+        $tanggal_pengembalian = date('Y-m-d', strtotime('+6 day', strtotime($tanggal_peminjaman)));
 
         $validated['tanggal_peminjaman'] = $tanggal_peminjaman;
         $validated['tanggal_pengembalian'] = $tanggal_pengembalian;

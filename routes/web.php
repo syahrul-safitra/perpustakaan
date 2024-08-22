@@ -34,6 +34,9 @@ Route::post('logout', [LoginController::class, 'logout']);
 
 Route::resource('anggota', AnggotaController::class)->middleware(['auth', 'isAdmin']);
 
+Route::get('admin', [AnggotaController::class, 'editAdmin'])->middleware(['auth', 'isAdmin']);
+Route::post('admin/{user}', [AnggotaController::class, 'updateAdmin'])->middleware(['auth', 'isAdmin']);
+
 Route::get('siswa', function () {
 
     return view('user.index', [
@@ -41,10 +44,6 @@ Route::get('siswa', function () {
         'categories' => Category::all()
     ]);
 })->middleware('auth');
-
-Route::get('cek', function () {
-    return dd(auth()->user());
-});
 
 
 // Peminjaman

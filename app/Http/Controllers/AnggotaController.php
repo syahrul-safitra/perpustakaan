@@ -138,4 +138,36 @@ class AnggotaController extends Controller
             'user' => $user
         ]);
     }
+
+    public function editAdmin()
+    {
+        $admin = User::where('is_admin', true)->first();
+
+        return view('admin.anggota.edit_admin', [
+            'user' => $admin
+        ]);
+    }
+
+    public function updateAdmin(Request $request, User $user)
+    {
+
+        $rules = [
+            'name' => 'required',
+            'email' => 'required|unique:users',
+            'password' => 'required'
+        ];
+
+        if ($request->email != $user->email) {
+            $rules['email'] = 'required|unique:users';
+        }
+
+        $validated = $request->validate($rules);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = bcrypt($validated['password']);
+        $user->save();
+
+        return redirect('anggota')->with('success', 'Data admin berhasil dirubah!');
+    }
 }

@@ -1,9 +1,9 @@
 <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
         <div class="sidebar-brand-icon">
-            <img src="{{ asset('img/logo/logo2.png') }}">
+            <img src="{{ asset('img/logo/tutwuri.png') }}">
         </div>
-        <div class="sidebar-brand-text mx-3">RuangAdmin</div>
+        <div class="sidebar-brand-text mx-3">Admin</div>
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item active">
@@ -39,6 +39,12 @@
         <a class="nav-link" href="{{ url('anggota') }}">
             <i class="fas fa-fw fa-palette"></i>
             <span>Data Anggota</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin') }}">
+            <i class="fas fa-fw fa-palette"></i>
+            <span>Admin</span>
         </a>
     </li>
 </ul>
