@@ -55,6 +55,10 @@
                                             <input type="password" class="form-control" id="exampleInputPassword"
                                                 placeholder="Password" name="password" required>
                                         </div>
+
+                                        <div class="mb-3">
+                                            <a href="{{ url('kunjungan') }}">Buku Kunjungan</a>
+                                        </div>
                                         <div class="form-group">
                                             {{-- <a href="index.html" class="btn btn-primary btn-block">Login</a> --}}
                                             <button class="btn btn-primary">Login</button>

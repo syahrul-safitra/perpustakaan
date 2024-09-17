@@ -112,11 +112,17 @@
                         <div class="form-group">
                             <label for="gambar">Gambar</label>
                             <input type="file" onchange="previewImage()" id="image" name="gambar"
-                                class="mb-3 form-control @error('gambar') 'is-invalid' @enderror">
+                                class="form-control @error('gambar') 'is-invalid' @enderror">
                             <img src="" alt="" id="img-preview" width="300px;height:300px">
                             @error('gambar')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
+                        </div>
+
+
+                        <div class="form-check mb-2 ">
+                            <input type="checkbox" class="form-check-input" value="kunci" name="kunci" id="kunci">
+                            <label for="kunci">Kunci Buku</label>
                         </div>
 
                         <div class="form-group">
@@ -124,9 +130,10 @@
                             @error('deskripsi')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
-                            <input id="x" type="hidden" name="deskripsi">
+                            <input id="x" type="hidden" value="{{ @old('deskripsi') }}" name="deskripsi">
                             <trix-editor input="x"></trix-editor>
                         </div>
+
 
                         <a href="{{ url('category') }}" class="btn btn-warning">Batal</a>
                         <button type="submit" class="btn btn-primary">Tambah</button>

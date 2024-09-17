@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->string('gambar');
             $table->string('berkas');
             $table->integer('stok');
+            $table->boolean('kunci')->default(false);
             $table->timestamps();
 
             $table->foreignId('category_id')->constrained()

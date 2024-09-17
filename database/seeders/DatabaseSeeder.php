@@ -16,7 +16,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'adminperpus@gmail.com',
             'password' => bcrypt('password'),
-            'is_admin' => true
+            'is_admin' => true,
+            'is_master' => true
+        ]);
+
+        \App\Models\PasswordBook::create([
+            'password' => 'password',
         ]);
 
         // \App\Models\Category::create([

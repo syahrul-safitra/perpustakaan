@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'gambar',
         'password',
+        'is_master',
     ];
 
     /**
@@ -58,6 +59,14 @@ class User extends Authenticatable
 
     public function scopeSiswa($query)
     {
-        return $query->where('is_admin', 'false');
+        return $query->where('is_admin', 'false')
+            ->where('is_master', 'false');
+    }
+
+    public function scopePetugas($query)
+    {
+        return $query->where('is_master', 1)
+            ->where('is_admin', 0)
+            ->get();
     }
 }

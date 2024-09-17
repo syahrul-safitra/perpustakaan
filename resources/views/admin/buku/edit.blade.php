@@ -93,6 +93,8 @@
                                     @foreach ($categories as $categori)
                                         @if (@old('category_id', $book->category_id) == $categori->id)
                                             <option value="{{ $categori->id }}" selected>{{ $categori->nama }}</option>
+                                        @else
+                                            <option value="{{ $categori->id }}">{{ $categori->nama }}</option>
                                         @endif
                                     @endforeach
                                 @else

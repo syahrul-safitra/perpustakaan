@@ -68,7 +68,6 @@ class AnggotaController extends Controller
      */
     public function edit(string $id)
     {
-
         return view('admin.anggota.edit', [
             'user' => User::findOrFail($id)
         ]);
@@ -93,7 +92,10 @@ class AnggotaController extends Controller
             $rules['nis'] = 'required|max:20|unique:users';
         }
 
+
         $validated = $request->validate($rules);
+
+        $validated['password'] = bcrypt($request->password);
 
         if ($request->file('gambar')) {
             $file = $request->file('gambar');
@@ -169,5 +171,18 @@ class AnggotaController extends Controller
         $user->save();
 
         return redirect('anggota')->with('success', 'Data admin berhasil dirubah!');
+    }
+
+    public function cetak(Request $request)
+    {
+        $data = User::where('is_admin', 0)
+            ->where('is_master', 0)
+            ->whereBetween('created_at', [$request->tanggal_awal, $request->tanggal_akhir])->latest()->get();
+
+        return view('admin.anggota.cetak', [
+            'data' => $data,
+            'tanggal_awal' => $request->tanggal_awal,
+            'tanggal_akhir' => $request->tanggal_akhir
+        ]);
     }
 }

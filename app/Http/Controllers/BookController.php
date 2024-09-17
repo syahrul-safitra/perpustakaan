@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\book;
 use App\Models\Category;
+use App\Models\PasswordBook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -14,8 +15,11 @@ class BookController extends Controller
      */
     public function index()
     {
+
+        $password = PasswordBook::all();
         return view('admin.buku.index', [
             'books' => book::with('category')->cari(request('search'))->latest()->paginate(10),
+            'password' => $password[0]->password
         ]);
     }
 
@@ -45,8 +49,12 @@ class BookController extends Controller
             'stok' => 'required',
             'deskripsi' => 'required|max:1000',
             'berkas' => 'required|max:10000',
-            'gambar' => 'required|max:2000'
+            'gambar' => 'required|max:2000',
         ]);
+
+        if ($request->kunci) {
+            $validated['kunci'] = 1;
+        }
 
         $file = $request->file('gambar');
 
@@ -75,8 +83,12 @@ class BookController extends Controller
      */
     public function show(book $book)
     {
+
+
+        $password = PasswordBook::all();
         return view('user.show', [
-            'book' => $book
+            'book' => $book,
+            'password' => $password[0]->password
         ]);
     }
 
@@ -85,6 +97,7 @@ class BookController extends Controller
      */
     public function edit(book $book)
     {
+
         return view('admin.buku.edit', [
             'book' => $book,
             'categories' => Category::all()
@@ -104,7 +117,8 @@ class BookController extends Controller
             'stok' => 'required',
             'deskripsi' => 'required|max:1000',
             'gambar' => 'max:2000',
-            'berkas' => 'max:10000'
+            'berkas' => 'max:10000',
+            'kunci' => ''
         ];
 
         if ($request->id_buku != $book->id_buku) {
@@ -168,5 +182,36 @@ class BookController extends Controller
     public function getCategories(Request $request)
     {
         return Book::where('category_id', $request->category_id)->get();
+    }
+
+    public function baca(book $book)
+    {
+        return view('user.baca', [
+            'book' => $book
+        ]);
+    }
+
+    public function changePassword(Request $request)
+    {
+
+        $validate = $request->validate([
+            'password' => 'required|max:50'
+        ]);
+
+        PasswordBook::find(1)->update($validate);
+
+        return back()->with('success', 'Password buku telah dirubah!');
+    }
+
+    public function cetak(Request $request)
+    {
+        $data = book::with('category')->whereBetween('created_at', [$request->tanggal_awal, $request->tanggal_akhir])->latest()->get();
+
+        return view('admin.buku.cetak', [
+            'data' => $data,
+            'tanggal_awal' => $request->tanggal_awal,
+            'tanggal_akhir' => $request->tanggal_akhir
+        ]);
+
     }
 }

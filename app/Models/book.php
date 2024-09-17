@@ -18,6 +18,7 @@ class book extends Model
         'gambar',
         'stok',
         'berkas',
+        'kunci',
         'category_id'
     ];
 

@@ -32,7 +32,6 @@
                         Cetak Laporan
                     </button>
 
-
                     <div>
                         <form action="" class="d-flex" method="GET">
                             <input type="text" class="form-control" name="search" placeholder="cari..">

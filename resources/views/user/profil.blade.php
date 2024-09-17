@@ -1,19 +1,16 @@
 @extends('user.layouts.main')
 
 @section('container')
-    <div class="container-fluid"><!-- Row -->
+    <div class="container-fluid">
         <div class="row">
 
-            <div class="col-lg-12">
+            <div class="col-lg-8 mx-auto">
                 <div class="card mb-3">
                     <div>
-                        <img src="{{ asset('img/logo/sekolah.jpg') }}" class="img-fluid w-100 h-80" alt="FOTO SEKOLAH">
+                        <img src="{{ asset('img/logo/bg.jpg') }}" class="img-fluid w-100 h-80" alt="FOTO SEKOLAH">
                     </div>
                 </div>
-            </div>
 
-            {{-- profil --}}
-            <div class="col-lg-6">
                 <div class="card mb-3">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Profil Sekolah</h6>
@@ -47,11 +44,7 @@
                         </tr>
                     </table>
                 </div>
-            </div>
 
-
-            {{-- profil --}}
-            <div class="col-lg-6">
                 <div class="card mb-3">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Profil</h6>
@@ -80,10 +73,8 @@
                         </tr>
                     </table>
                 </div>
+
             </div>
-
-
         </div>
-        <!--Row-->
     </div>
 @endsection

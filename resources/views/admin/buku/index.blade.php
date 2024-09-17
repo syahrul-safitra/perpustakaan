@@ -29,8 +29,69 @@
                     <h6 class="m-0 font-weight-bold text-primary">Data Buku</h6>
                 </div>
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <a class="btn btn-primary" href="{{ url('book/create') }}">Tambah</a>
 
+                    <div class="flex">
+                        <a class="btn btn-primary" href="{{ url('book/create') }}">Tambah</a>
+                        <button class="btn btn-info" data-target="#cetakLaporan" data-toggle="modal">Cetak</button>
+
+                        <button class="btn btn-danger" id="" data-target="#changePassword" data-toggle="modal">
+                            Password
+                        </button>
+
+                        {{-- Modal : --}}
+                        <div class="modal fade" id="changePassword" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{ url('password') }}" method="POST">
+                                        <div class="modal-body">
+                                            <p>Ganti Password</p>
+                                            @csrf
+                                            <input type="text" class="form-control" name="password"
+                                                value="{{ $password }}" required>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        {{-- Modal cetak laporan :  --}}
+                        <div class="modal fade" id="cetakLaporan" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{ url('cetak/book') }}" method="POST">
+                                        <div class="modal-body">
+                                            <p>Masukan tanggal awal dan akhir</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            @csrf
+                                            <input type="date" class="form-control" name="tanggal_awal">
+                                            <input type="date" class="form-control" name="tanggal_akhir">
+                                            <button type="submit" class="btn btn-primary">Cetak</button>
+                                        </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                    </div>
                     <div>
                         <form class="d-flex justify-content-between" action="">
 
@@ -118,7 +179,8 @@
                                                             <form action="{{ url('book/' . $book->id) }}" method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                <button type="submit"
+                                                                    class="btn btn-danger">Hapus</button>
                                                             </form>
                                                         </div>
                                                     </div>
