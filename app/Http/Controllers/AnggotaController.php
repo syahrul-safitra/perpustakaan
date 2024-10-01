@@ -39,6 +39,9 @@ class AnggotaController extends Controller
             'email' => 'required|email|max:20'
         ]);
 
+        $validated['role'] = 'siswa';
+        $validated['text_password'] = $validated['password'];
+
         $gambar = $request->file('gambar');
 
         $renameFile = uniqid() . '_' . $gambar->getClientOriginalName();
@@ -95,6 +98,7 @@ class AnggotaController extends Controller
 
         $validated = $request->validate($rules);
 
+        $validated['text_password'] = $request->password;
         $validated['password'] = bcrypt($request->password);
 
         if ($request->file('gambar')) {
@@ -143,14 +147,106 @@ class AnggotaController extends Controller
 
     public function editAdmin()
     {
-        $admin = User::where('is_admin', true)->first();
+        $admin = User::where('role', 'admin')->first();
 
         return view('admin.anggota.edit_admin', [
             'user' => $admin
         ]);
     }
 
+    public function editKepsek($id)
+    {
+        // $admin = User::where('role', 'admin')->first();
+
+        $user = User::find($id);
+        return view('admin.anggota.edit_kepsek', [
+            'user' => $user
+        ]);
+    }
+
+    public function editKeperpus($id)
+    {
+        // $admin = User::where('role', 'admin')->first();
+
+        $user = User::find($id);
+        return view('admin.anggota.edit_kepperpus', [
+            'user' => $user
+        ]);
+    }
+
     public function updateAdmin(Request $request, User $user)
+    {
+
+        $rules = [
+            'name' => 'required',
+            'email' => '',
+            'password' => 'required'
+        ];
+
+        if ($request->email != $user->email) {
+            $rules['email'] = 'required|unique:users';
+        }
+
+        $validated = $request->validate($rules);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = bcrypt($validated['password']);
+        $user->text_password = $validated['password'];
+        $user->save();
+
+        return redirect('admin')->with('success', 'Data admin berhasil dirubah!');
+    }
+
+    public function updateKepsek(Request $request, User $user)
+    {
+
+        $rules = [
+            'name' => 'required',
+            'email' => '',
+            'password' => 'required'
+        ];
+
+        if ($request->email != $user->email) {
+            $rules['email'] = 'required|unique:users';
+        }
+
+        $validated = $request->validate($rules);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = bcrypt($validated['password']);
+        $user->text_password = $validated['password'];
+        $user->save();
+
+        return redirect('kepsek/' . $user->id)->with('success', 'Data Kepala Sekolah berhasil dirubah!');
+    }
+
+    public function updateKeprepus(Request $request, User $user)
+    {
+
+        $rules = [
+            'name' => 'required',
+            'email' => '',
+            'password' => 'required'
+        ];
+
+        if ($request->email != $user->email) {
+            $rules['email'] = 'required|unique:users';
+        }
+
+        $validated = $request->validate($rules);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = bcrypt($validated['password']);
+        $user->text_password = $validated['password'];
+        $user->save();
+
+        return redirect('kepperpus/' . $user->id)->with('success', 'Data Kepala Sekolah berhasil dirubah!');
+    }
+
+    public function updateKepperpus(Request $request, User $user)
     {
 
         $rules = [
@@ -168,15 +264,15 @@ class AnggotaController extends Controller
         $user->name = $validated['name'];
         $user->email = $validated['email'];
         $user->password = bcrypt($validated['password']);
+        $user->text_password = $validated['password'];
         $user->save();
 
-        return redirect('anggota')->with('success', 'Data admin berhasil dirubah!');
+        return redirect('kepsek')->with('success', 'Data Kepala Perpus berhasil dirubah!');
     }
 
     public function cetak(Request $request)
     {
-        $data = User::where('is_admin', 0)
-            ->where('is_master', 0)
+        $data = User::where('role', 'siswa')
             ->whereBetween('created_at', [$request->tanggal_awal, $request->tanggal_akhir])->latest()->get();
 
         return view('admin.anggota.cetak', [

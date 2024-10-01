@@ -16,8 +16,7 @@
         Features
     </div>
 
-
-    @can('admin')
+    @can('admin_kepalasekolah')
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseForm"
                 aria-expanded="true" aria-controls="collapseForm">
@@ -29,6 +28,7 @@
                     <h6 class="collapse-header">Data</h6>
                     <a class="collapse-item" href="{{ url('category') }}">Kategori</a>
                     <a class="collapse-item" href="{{ url('book') }}">Buku</a>
+                    <a class="collapse-item" href="{{ url('ebook') }}">Ebook</a>
                 </div>
             </div>
         </li>
@@ -46,10 +46,25 @@
                 <span>Petugas</span>
             </a>
         </li>
+    @endcan
+
+    @can('admin')
         <li class="nav-item">
             <a class="nav-link" href="{{ url('admin') }}">
                 <i class="fas fa-fw fa-palette"></i>
                 <span>Admin</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('kepsek/' . 2) }}">
+                <i class="fas fa-fw fa-palette"></i>
+                <span>Kepala Sekolah</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url('kepperpus/' . 3) }}">
+                <i class="fas fa-fw fa-palette"></i>
+                <span>Kepala Perpus</span>
             </a>
         </li>
     @endcan

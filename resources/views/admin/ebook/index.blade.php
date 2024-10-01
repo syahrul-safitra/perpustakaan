@@ -26,17 +26,46 @@
 
             <div class="card mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Data Anggota</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Data Buku Ebook</h6>
                 </div>
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 
                     <div class="flex">
-
                         @can('admin')
-                            <a class="btn btn-primary" href="{{ url('anggota/create') }}">Tambah</a>
+                            <a class="btn btn-primary" href="{{ url('ebook/create') }}">Tambah</a>
+                            <button class="btn btn-danger" id="" data-target="#changePassword" data-toggle="modal">
+                                Password
+                            </button>
                         @endcan
 
                         <button class="btn btn-info" data-target="#cetakLaporan" data-toggle="modal">Cetak</button>
+
+
+                        {{-- Modal : --}}
+                        <div class="modal fade" id="changePassword" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{ url('password') }}" method="POST">
+                                        <div class="modal-body">
+                                            <p>Ganti Password</p>
+                                            @csrf
+                                            <input type="text" class="form-control" name="password"
+                                                value="{{ $password->password }}" required>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
 
                         {{-- Modal cetak laporan :  --}}
                         <div class="modal fade" id="cetakLaporan" tabindex="-1" role="dialog"
@@ -44,11 +73,12 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
+                                        {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <form action="{{ url('cetak/anggota') }}" method="POST">
+                                    <form action="{{ url('cetak/ebook') }}" method="POST">
                                         <div class="modal-body">
                                             <p>Masukan tanggal awal dan akhir</p>
                                         </div>
@@ -63,8 +93,8 @@
                             </div>
                         </div>
 
-                    </div>
 
+                    </div>
                     <div>
                         <form class="d-flex justify-content-between" action="">
 
@@ -74,42 +104,66 @@
                     </div>
                 </div>
                 <div class="table-responsive p-3">
-                    <table class="table align-items-center table-flush table-hover mb-3" id="dataTableHover">
+                    <table class="table align-items-center table-flush table-hover" id="dataTableHover">
                         <thead class="thead-light">
                             <tr>
                                 <th>No</th>
-                                <th>NIS</th>
-                                <th>Nama</th>
-                                <th>Email</th>
-                                <th>Password</th>
+                                <th>Kode Ebook</th>
+                                <th>Judul</th>
+                                <th>Penulis</th>
+                                <th>Kategori</th>
+                                <th>Tahun Terbit</th>
+                                <th>Deskripsi</th>
+                                <th>File</th>
                                 @can('admin')
                                     <th>Aksi</th>
                                 @endcan
                             </tr>
                         </thead>
+
                         <tbody>
-                            @foreach ($anggotas as $anggota)
+
+                            @foreach ($ebooks as $book)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $anggota->nis }}</td>
-                                    <td>{{ $anggota->name }}</td>
-                                    <td>{{ $anggota->email }}</td>
-                                    <td>{{ $anggota->text_password }}</td>
+                                    <td>{{ $book->id_buku }}</td>
+                                    <td>{{ $book->judul }}</td>
+                                    <td>{{ $book->penulis }}</td>
+                                    <td>{{ $book->category->nama }}</td>
+                                    <td>{{ $book->tahun_terbit }}</td>
+                                    <td>
+                                        @php
+                                            $result = str_replace(['<div>', '</div>'], ' ', $book->deskripsi);
+
+                                            if (strlen($result) > 50) {
+                                                $result = substr($result, 0, 50);
+
+                                                $result = $result . '...';
+                                            }
+                                        @endphp
+
+                                        {!! $result !!}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url('files/' . $book->berkas) }}" class="btn btn-info"
+                                            style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px"><i
+                                                class="bi bi-file-earmark-pdf"></i></a>
+                                    </td>
                                     @can('admin')
                                         <td>
                                             <div class="d-flex" style="gap:1rem">
-                                                <a href="{{ url('anggota/' . $anggota->id . '/edit') }}" class="btn btn-warning"
+                                                <a href="{{ url('ebook/' . $book->id . '/edit') }}" class="btn btn-warning"
                                                     style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px"><i
                                                         class="bi bi-pencil-square"></i></a>
 
                                                 <button class="btn btn btn-danger" id=""
-                                                    data-target="#exampleModal{{ $anggota->id }}" data-toggle="modal"
+                                                    data-target="#exampleModal{{ $book->id }}" data-toggle="modal"
                                                     style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
 
                                                 <!-- Modal -->
-                                                <div class="modal fade" id="exampleModal{{ $anggota->id }}" tabindex="-1"
+                                                <div class="modal fade" id="exampleModal{{ $book->id }}" tabindex="-1"
                                                     role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog" role="document">
                                                         <div class="modal-content">
@@ -121,31 +175,30 @@
                                                                 </button>
                                                             </div>
                                                             <div class="modal-body">
-                                                                <p>Anda akan menghapus data anggota {{ $anggota->name }}</p>
+                                                                <p>Anda akan menghapus data ebook {{ $book->judul }}</p>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-outline-primary"
                                                                     data-dismiss="modal">Batal</button>
-                                                                <form action="{{ url('anggota/' . $anggota->id) }}"
-                                                                    method="post">
+                                                                <form action="{{ url('ebook/' . $book->id) }}"
+                                                                    method="POST">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Hapus</button>
                                                                 </form>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                         </td>
                                     @endcan
                                 </tr>
                             @endforeach
                         </tbody>
-
                     </table>
 
-                    {{ $anggotas->links('pagination::bootstrap-4') }}
+                    {{ $ebooks->links('pagination::bootstrap-4') }}
                 </div>
             </div>
         </div>

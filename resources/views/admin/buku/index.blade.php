@@ -31,38 +31,10 @@
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
 
                     <div class="flex">
-                        <a class="btn btn-primary" href="{{ url('book/create') }}">Tambah</a>
+                        @can('admin')
+                            <a class="btn btn-primary" href="{{ url('book/create') }}">Tambah</a>
+                        @endcan
                         <button class="btn btn-info" data-target="#cetakLaporan" data-toggle="modal">Cetak</button>
-
-                        <button class="btn btn-danger" id="" data-target="#changePassword" data-toggle="modal">
-                            Password
-                        </button>
-
-                        {{-- Modal : --}}
-                        <div class="modal fade" id="changePassword" tabindex="-1" role="dialog"
-                            aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <form action="{{ url('password') }}" method="POST">
-                                        <div class="modal-body">
-                                            <p>Ganti Password</p>
-                                            @csrf
-                                            <input type="text" class="form-control" name="password"
-                                                value="{{ $password }}" required>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                        </div>
-                                </div>
-                                </form>
-                            </div>
-                        </div>
 
                         {{-- Modal cetak laporan :  --}}
                         <div class="modal fade" id="cetakLaporan" tabindex="-1" role="dialog"
@@ -111,9 +83,11 @@
                                 <th>Kategori</th>
                                 <th>Tahun Terbit</th>
                                 <th>Stok</th>
+                                <th>Rak</th>
                                 <th>Deskripsi</th>
-                                <th>File</th>
-                                <th>Aksi</th>
+                                @can('admin')
+                                    <th>Aksi</th>
+                                @endcan
                             </tr>
                         </thead>
 
@@ -128,6 +102,7 @@
                                     <td>{{ $book->category->nama }}</td>
                                     <td>{{ $book->tahun_terbit }}</td>
                                     <td>{{ $book->stok }}</td>
+                                    <td>{{ $book->rak }}</td>
                                     <td>
                                         @php
                                             $result = str_replace(['<div>', '</div>'], ' ', $book->deskripsi);
@@ -141,52 +116,48 @@
 
                                         {!! $result !!}
                                     </td>
-                                    <td>
-                                        <a href="{{ url('files/' . $book->berkas) }}" class="btn btn-info"
-                                            style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px"><i
-                                                class="bi bi-file-earmark-pdf"></i></a>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex" style="gap:1rem">
-                                            <a href="{{ url('book/' . $book->id . '/edit') }}" class="btn btn-warning"
-                                                style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px"><i
-                                                    class="bi bi-pencil-square"></i></a>
+                                    @can('admin')
+                                        <td>
+                                            <div class="d-flex" style="gap:1rem">
+                                                <a href="{{ url('book/' . $book->id . '/edit') }}" class="btn btn-warning"
+                                                    style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px"><i
+                                                        class="bi bi-pencil-square"></i></a>
 
-                                            <button class="btn btn btn-danger" id=""
-                                                data-target="#exampleModal{{ $book->id }}" data-toggle="modal"
-                                                style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                                <button class="btn btn btn-danger" id=""
+                                                    data-target="#exampleModal{{ $book->id }}" data-toggle="modal"
+                                                    style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
 
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="exampleModal{{ $book->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Anda akan menghapus data buku {{ $book->judul }}</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-outline-primary"
-                                                                data-dismiss="modal">Batal</button>
-                                                            <form action="{{ url('book/' . $book->id) }}" method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="btn btn-danger">Hapus</button>
-                                                            </form>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="exampleModal{{ $book->id }}" tabindex="-1"
+                                                    role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Anda akan menghapus data buku {{ $book->judul }}</p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-outline-primary"
+                                                                    data-dismiss="modal">Batal</button>
+                                                                <form action="{{ url('book/' . $book->id) }}" method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                    </td>
+                                        </td>
+                                    @endcan
                                 </tr>
                             @endforeach
                         </tbody>

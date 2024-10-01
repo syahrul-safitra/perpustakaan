@@ -10,7 +10,7 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('ebooks', function (Blueprint $table) {
             $table->id();
             $table->string('id_buku', 20)->unique();
             $table->string('judul', 100);
@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->date('tahun_terbit');
             $table->text('deskripsi');
             $table->string('gambar');
-            $table->integer('stok');
-            $table->string('rak');
+            $table->string('berkas');
+            $table->boolean('kunci')->default(false);
             $table->timestamps();
 
             $table->foreignId('category_id')->constrained()
@@ -33,6 +33,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('ebooks');
     }
 };

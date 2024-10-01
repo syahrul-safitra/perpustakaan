@@ -16,9 +16,9 @@ return new class extends Migration {
             $table->string('nis')->nullable();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('text_password')->nullable();
             $table->string('gambar')->nullable();
-            $table->boolean('is_admin')->default(false);
-            $table->boolean('is_master')->default(false);
+            $table->string('role');
             $table->timestamps();
         });
     }

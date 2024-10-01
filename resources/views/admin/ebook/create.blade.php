@@ -9,14 +9,22 @@
                     <h6 class="m-0 font-weight-bold text-primary">Form Buku</h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ url('book/' . $book->id) }}" method="POST" enctype=multipart/form-data>
-                        @csrf
-                        @method('PATCH')
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
+
+                    <form action="{{ url('ebook') }}" method="POST" enctype=multipart/form-data>
+                        @csrf
                         <div class="form-group">
-                            <label for="id_buku">Kode Buku</label>
-                            <input type="text" id="id_buku" name="id_buku"
-                                value="{{ @old('id_buku', $book->id_buku) }}"
+                            <label for="id_buku">Kode Ebook</label>
+                            <input type="text" id="id_buku" name="id_buku" value="{{ @old('id_buku') }}"
                                 class="form-control  @error('id_buku')
                                 is-invalid
                             @enderror">
@@ -29,7 +37,7 @@
 
                         <div class="form-group">
                             <label for="judul">Judul</label>
-                            <input type="text" id="judul" name="judul" value="{{ @old('judul', $book->judul) }}"
+                            <input type="text" id="judul" name="judul" value="{{ @old('judul') }}"
                                 class="form-control  @error('judul')
                                 is-invalid
                             @enderror">
@@ -42,8 +50,7 @@
 
                         <div class="form-group">
                             <label for="penulis">Penulis</label>
-                            <input type="text" id="penulis" name="penulis"
-                                value="{{ @old('penulis', $book->penulis) }}"
+                            <input type="text" id="penulis" name="penulis" value="{{ @old('penulis') }}"
                                 class="form-control  @error('penulis')
                                 is-invalid
                             @enderror">
@@ -56,8 +63,7 @@
 
                         <div class="form-group">
                             <label for="tahun_terbit">Tahun Terbit</label>
-                            <input type="date" id="tahun_terbit" name="tahun_terbit"
-                                value="{{ @old('tahun_terbit', $book->tahun_terbit) }}"
+                            <input type="date" id="tahun_terbit" name="tahun_terbit" value="{{ @old('tahun_terbit') }}"
                                 class="form-control  @error('tahun_terbit')
                                 is-invalid
                             @enderror">
@@ -69,32 +75,17 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="stok">Stok</label>
-                            <input type="number" id="stok" name="stok" value="{{ @old('stok', $book->stok) }}"
-                                class="form-control @error('stok') is-invalid
-                            @enderror">
-
-                            @error('stok')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group">
                             <label for="kategori">Kategori</label>
-                            @error('kategori')
+                            @error('category_id')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
                             <select class="select2-single form-control" style="width: 100%" name="category_id"
                                 id="kategori">
                                 <option value="">Pilih</option>
-                                @if (@old('category_id', $book->category_id))
+                                @if (@old('category_id'))
                                     @foreach ($categories as $categori)
-                                        @if (@old('category_id', $book->category_id) == $categori->id)
+                                        @if (@old('category_id') == $categori->id)
                                             <option value="{{ $categori->id }}" selected>{{ $categori->nama }}</option>
-                                        @else
-                                            <option value="{{ $categori->id }}">{{ $categori->nama }}</option>
                                         @endif
                                     @endforeach
                                 @else
@@ -106,23 +97,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="rak">Rak</label>
-                            <input type="text" id="rak" name="rak" value="{{ @old('rak', $book->rak) }}"
-                                class="form-control @error('rak') is-invalid
-                            @enderror">
-
-                            @error('rak')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-
-                        <div class="form-group">
                             <label for="berkas">Berkas</label>
                             <input type="file" name="berkas"
                                 class="form-control @error('berkas') 'is-invalid' @enderror">
+                            <p class="text-danger mt-2">Maximal file 2 Mb.</p>
 
                             @error('berkas')
                                 <p class="text-danger">{{ $message }}</p>
@@ -132,12 +110,17 @@
                         <div class="form-group">
                             <label for="gambar">Gambar</label>
                             <input type="file" onchange="previewImage()" id="image" name="gambar"
-                                class="mb-3 form-control @error('gambar') 'is-invalid' @enderror">
-                            <img src="{{ asset('files/' . $book->gambar) }}" alt="" id="img-preview"
-                                width="300px;height:300px">
+                                class="form-control @error('gambar') 'is-invalid' @enderror">
+                            <img src="" alt="" id="img-preview" width="300px;height:300px">
                             @error('gambar')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
+                        </div>
+
+
+                        <div class="form-check mb-2 ">
+                            <input type="checkbox" class="form-check-input" value="kunci" name="kunci" id="kunci">
+                            <label for="kunci">Kunci Buku</label>
                         </div>
 
                         <div class="form-group">
@@ -145,12 +128,13 @@
                             @error('deskripsi')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
-                            <input id="x" type="hidden" name="deskripsi" value="{{ $book->deskripsi }}">
+                            <input id="x" type="hidden" value="{{ @old('deskripsi') }}" name="deskripsi">
                             <trix-editor input="x"></trix-editor>
                         </div>
 
-                        <a href="{{ url('book') }}" class="btn btn-warning">Batal</a>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
+
+                        <a href="{{ url('category') }}" class="btn btn-warning">Batal</a>
+                        <button type="submit" class="btn btn-primary">Tambah</button>
                     </form>
                 </div>
             </div>

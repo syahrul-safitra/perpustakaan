@@ -5,10 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class book extends Model
+class Ebook extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'id_buku',
         'judul',
@@ -16,12 +15,25 @@ class book extends Model
         'tahun_terbit',
         'deskripsi',
         'gambar',
-        'stok',
         'berkas',
         'kunci',
-        'rak',
         'category_id'
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function scopecari($query, $filter)
+    {
+        return $query->where('judul', 'LIKE', '%' . $filter . '%')
+            ->orWhere('penulis', 'LIKE', '%' . $filter . '%')
+            ->orWhere('tahun_terbit', $filter)
+            ->orWhereHas('category', function ($query) use ($filter) {
+                $query->where('nama', 'LIKE', '%' . $filter . '%');
+            });
+    }
 
     public function scopeFilters($query, array $filters)
     {
@@ -38,24 +50,5 @@ class book extends Model
         });
     }
 
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    public function borrows()
-    {
-        return $this->hasMany(borrow::class);
-    }
-
-    public function scopecari($query, $filter)
-    {
-        return $query->where('judul', 'LIKE', '%' . $filter . '%')
-            ->orWhere('penulis', 'LIKE', '%' . $filter . '%')
-            ->orWhere('tahun_terbit', $filter)
-            ->orWhereHas('category', function ($query) use ($filter) {
-                $query->where('nama', 'LIKE', '%' . $filter . '%');
-            });
-    }
 
 }

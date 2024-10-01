@@ -98,7 +98,7 @@
 
             <center>
 
-                <h3 style="margin-top: 10px">Laporan Anggota</h3><br>
+                <h3 style="margin-top: 10px">Laporan Ebook</h3><br>
                 <h4>Periode {{ date('d-m-Y', strtotime($tanggal_awal)) }} -
                     {{ date('d-m-Y', strtotime($tanggal_akhir)) }}</h4>
             </center>
@@ -110,18 +110,22 @@
             <table class="main" border="1" bordercollapse="collapse">
                 <tr>
                     <th>No</th>
-                    <th>Nama</th>
-                    <th>NIS</th>
-                    <th>Email</th>
-                    <th>Password</th>
+                    <th>Kode</th>
+                    <th>Judul</th>
+                    <th>Penulis</th>
+                    <th>Kategori</th>
+                    <th>Tahun Terbit</th>
+                    <th>Stok</th>
                 </tr>
                 @foreach ($data as $d)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $d->name }}</td>
-                        <td>{{ $d->nis }}</td>
-                        <td>{{ $d->email }}</td>
-                        <td>{{ $d->text_password }}</td>
+                        <td>{{ $d->id_buku }}</td>
+                        <td>{{ $d->judul }}</td>
+                        <td>{{ $d->penulis }}</td>
+                        <td>{{ $d->category->nama }}</td>
+                        <td>{{ $d->tahun_terbit }}</td>
+                        <td>{{ $d->stok }}</td>
                     </tr>
                 @endforeach
             </table>

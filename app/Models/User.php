@@ -22,8 +22,12 @@ class User extends Authenticatable
         'nis',
         'email',
         'gambar',
+        'role',
+        'text_password',
         'password',
         'is_master',
+        'is_kepala_sekolah',
+        'is_kepala_perpus'
     ];
 
     /**
@@ -59,14 +63,12 @@ class User extends Authenticatable
 
     public function scopeSiswa($query)
     {
-        return $query->where('is_admin', 'false')
-            ->where('is_master', 'false');
+        return $query->where('role', 'siswa');
     }
 
     public function scopePetugas($query)
     {
-        return $query->where('is_master', 1)
-            ->where('is_admin', 0)
+        return $query->where('role', 'petugasr')
             ->get();
     }
 }

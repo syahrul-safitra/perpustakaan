@@ -99,13 +99,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="berkas">Berkas</label>
-                            <input type="file" name="berkas"
-                                class="form-control @error('berkas') 'is-invalid' @enderror">
-                            <p class="text-danger mt-2">Maximal file 2 Mb.</p>
+                            <label for="rak">Rak</label>
+                            <input type="text" id="rak" name="rak" value="{{ @old('rak') }}"
+                                class="form-control @error('rak') is-invalid
+                            @enderror">
 
-                            @error('berkas')
-                                <p class="text-danger">{{ $message }}</p>
+                            @error('rak')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
                             @enderror
                         </div>
 
@@ -117,12 +119,6 @@
                             @error('gambar')
                                 <p class="text-danger">{{ $message }}</p>
                             @enderror
-                        </div>
-
-
-                        <div class="form-check mb-2 ">
-                            <input type="checkbox" class="form-check-input" value="kunci" name="kunci" id="kunci">
-                            <label for="kunci">Kunci Buku</label>
                         </div>
 
                         <div class="form-group">

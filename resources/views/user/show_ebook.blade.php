@@ -19,28 +19,17 @@
         <h5>Penulis : {{ $book->penulis }}</h5>
         <h5>Tahun Terbit : {{ $book->tahun_terbit }}</h5>
         <h5>Kategori : {{ $book->category->nama }}</h5>
-        <h5>Stok : {{ $book->stok }}</h5>
 
-        <p style="text-align: center">{!! $book->deskripsi !!}</p>
-
-        @if ($book->stok == 0)
-            <button class="btn btn-danger mb-5">Stok Habis</button>
-        @else
-            {{-- <form action="{{ url('pinjam') }}" method="POST">
-                @csrf
-                <input type="hidden" name="book_id" value="{{ $book->id }}">
-                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-
-                <button class="btn btn-info mb-5">Pinjam</button>
-            </form> --}}
-
-            <button class="btn btn btn-info mb-3" id="" data-target="#exampleModal{{ $book->id }}"
-                data-toggle="modal">Pinjam
+        @if ($book->kunci)
+            <button class="btn btn-danger"
+                style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px" id=""
+                data-target="#exampleModal" data-toggle="modal">
+                <i class="fas fa-book" style="margin-right:5px"></i>Baca Buku
             </button>
 
             <!-- Modal -->
-            <div class="modal fade" id="exampleModal{{ $book->id }}" tabindex="-1" role="dialog"
-                aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -49,25 +38,26 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                            <p>Anda akan meminjam buku dengan judul {{ $book->judul }}, dan batas
-                                peminjaman tujuah hari
-                                kedepan dan denda perhari Rp.5000, apakah anda setuju?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Batal</button>
-                            <form action="{{ url('pinjam') }}" method="post">
+                        <form action="{{ url('files/' . $book->berkas) }}" method="get">
+                            <div class="modal-body">
+                                <p>Masukan password</p>
+                                <input type="text" id="input-password" class="form-control" required>
+                            </div>
+                            <div class="modal-footer">
                                 @csrf
-                                <input type="hidden" name="book_id" value="{{ $book->id }}">
-                                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-
-                                <button type="submit" class="btn btn-info">Setuju</button>
-                            </form>
-                        </div>
+                                <button type="submit" id="btn-password" class="btn btn-primary">submit</button>
+                            </div>
                     </div>
+                    </form>
                 </div>
             </div>
+        @else
+            <a href="{{ url('files/' . $book->berkas) }}" class="btn btn-success"
+                style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px"><i class="fas fa-book"
+                    style="margin-right:5px"></i>Baca Buku</a>
         @endif
+
+        <p style="text-align: center">{!! $book->deskripsi !!}</p>
     </div>
 
 

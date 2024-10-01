@@ -78,7 +78,9 @@
                                 <th>Tanggal Dikembalikan</th>
                                 <th>Status</th>
                                 <th>Denda</th>
-                                <th>Aksi</th>
+                                @can('admin')
+                                    <th>Aksi</th>
+                                @endcan
                             </tr>
                         </thead>
 
@@ -116,95 +118,97 @@
 
                                     @endphp
                                     <td>{{ $selisih }}</td>
-                                    <td>
-                                        <div class="d-flex" style="gap:1rem">
+                                    @can('admin')
+                                        <td>
+                                            <div class="d-flex" style="gap:1rem">
 
-                                            @if ($data->status == 'dipinjam')
-                                                {{-- For Return --}}
-                                                <button class="btn btn btn-success" id=""
-                                                    data-target="#modalReturn{{ $data->id }}" data-toggle="modal"
+                                                @if ($data->status == 'dipinjam')
+                                                    {{-- For Return --}}
+                                                    <button class="btn btn btn-success" id=""
+                                                        data-target="#modalReturn{{ $data->id }}" data-toggle="modal"
+                                                        style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px">
+                                                        <i class="bi bi-bookmark-check-fill"></i>
+                                                    </button>
+                                                @endif
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="modalReturn{{ $data->id }}" tabindex="-1"
+                                                    role="dialog" aria-labelledby="modalReturnLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>
+                                                                    {{ $data->user->name }} akan mengembalikan buku
+                                                                    {{ $data->book->judul }}
+                                                                    dengan denda {{ $selisih }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-outline-primary"
+                                                                    data-dismiss="modal">Batal</button>
+                                                                <form action="{{ url('kembalikan/' . $data->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="denda"
+                                                                        value="{{ $selisih }}">
+                                                                    <input type="hidden" name="tanggal_dikembalikan"
+                                                                        value="{{ date('Y-m-d') }}">
+                                                                    <button type="submit"
+                                                                        class="btn btn-info">Simpan</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- For Delete --}}
+                                                <button class="btn btn btn-danger" id=""
+                                                    data-target="#modalDelete{{ $data->id }}" data-toggle="modal"
                                                     style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px">
-                                                    <i class="bi bi-bookmark-check-fill"></i>
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
-                                            @endif
 
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="modalReturn{{ $data->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="modalReturnLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>
-                                                                {{ $data->user->name }} akan mengembalikan buku
-                                                                {{ $data->book->judul }}
-                                                                dengan denda {{ $selisih }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-outline-primary"
-                                                                data-dismiss="modal">Batal</button>
-                                                            <form action="{{ url('kembalikan/' . $data->id) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <input type="hidden" name="denda"
-                                                                    value="{{ $selisih }}">
-                                                                <input type="hidden" name="tanggal_dikembalikan"
-                                                                    value="{{ date('Y-m-d') }}">
-                                                                <button type="submit"
-                                                                    class="btn btn-info">Simpan</button>
-                                                            </form>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="modalDelete{{ $data->id }}" tabindex="-1"
+                                                    role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Anda akan menghapus data peminjaman milik
+                                                                    {{ $data->user->name }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-outline-primary"
+                                                                    data-dismiss="modal">Batal</button>
+                                                                <form action="{{ url('pinjam/' . $data->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Hapus</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {{-- For Delete --}}
-                                            <button class="btn btn btn-danger" id=""
-                                                data-target="#modalDelete{{ $data->id }}" data-toggle="modal"
-                                                style="padding-top: 2px; padding-bottom: 2px; padding-left: 5px; padding-right: 5px">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="modalDelete{{ $data->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="modalDeleteLabel" aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Anda akan menghapus data peminjaman milik
-                                                                {{ $data->user->name }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-outline-primary"
-                                                                data-dismiss="modal">Batal</button>
-                                                            <form action="{{ url('pinjam/' . $data->id) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit"
-                                                                    class="btn btn-danger">Hapus</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
+                                        </td>
+                                    @endcan
                             @endforeach
                         </tbody>
                     </table>

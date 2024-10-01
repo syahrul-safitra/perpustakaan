@@ -17,7 +17,7 @@ class isMaster
     {
 
 
-        if (auth()->user()->is_master) {
+        if (auth()->user()->role == 'admin' || auth()->user()->role == 'kepala_sekolah' || auth()->user()->role == 'kepala_perpus' || auth()->user()->role == 'petugas') {
 
             return $next($request);
         }

@@ -13,8 +13,7 @@ class PetugasController extends Controller
     public function index()
     {
         return view('admin.petugas.index', [
-            'petugas' => User::where('is_master', 1)
-                ->where('is_admin', 0)
+            'petugas' => User::where('role', 'petugas')
                 ->get()
         ]);
     }
@@ -38,7 +37,8 @@ class PetugasController extends Controller
             'password' => 'required|max:20'
         ]);
 
-        $validated['is_master'] = true;
+        $validated['role'] = 'petugas';
+        $validated['text_password'] = $validated['password'];
 
         User::create($validated);
 
@@ -81,7 +81,10 @@ class PetugasController extends Controller
             $rules['email'] = 'required|max:100|unique:users';
         }
 
+
         $validated = $request->validate($rules);
+
+        $validated['text_password'] = $validated['password'];
 
         User::find($petuga->id)->update($validated);
 

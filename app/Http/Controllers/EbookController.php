@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\book;
-use App\Models\Category;
+use App\Models\Ebook;
 use App\Models\PasswordBook;
-use Illuminate\Http\Request;
+use App\Models\Category;
 use Illuminate\Support\Facades\File;
 
-class BookController extends Controller
+use Illuminate\Http\Request;
+
+class EbookController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +17,10 @@ class BookController extends Controller
     public function index()
     {
 
-        $password = PasswordBook::all();
-        return view('admin.buku.index', [
-            'books' => book::with('category')->cari(request('search'))->latest()->paginate(10),
-            'password' => $password[0]->password
+        $password = PasswordBook::first();
+        return view('admin.ebook.index', [
+            'ebooks' => Ebook::with('category')->cari(request('search'))->latest()->paginate(10),
+            'password' => $password
         ]);
     }
 
@@ -28,29 +29,31 @@ class BookController extends Controller
      */
     public function create()
     {
-        return view('admin.buku.create', [
+        return view('admin.ebook.create', [
             'categories' => Category::all()
         ]);
-
     }
 
-    /*
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
 
         $validated = $request->validate([
-            'id_buku' => 'required|max:255|unique:books',
+            'id_buku' => 'required|max:255|unique:ebooks',
             'judul' => 'required|max:255',
             'penulis' => 'required|max:255',
             'tahun_terbit' => 'required|date',
             'category_id' => 'required',
-            'stok' => 'required',
-            'rak' => 'required',
             'deskripsi' => 'required|max:1000',
+            'berkas' => 'required|max:10000',
             'gambar' => 'required|max:2000',
         ]);
+
+        if ($request->kunci) {
+            $validated['kunci'] = 1;
+        }
 
         $file = $request->file('gambar');
 
@@ -58,25 +61,31 @@ class BookController extends Controller
 
         $validated['gambar'] = $renameFile;
 
-        Book::create($validated);
+        $berkas = $request->file('berkas');
+
+        $renameBerkas = uniqid() . '_' . $berkas->getClientOriginalName();
+
+        $validated['berkas'] = $renameBerkas;
+
+        Ebook::create($validated);
 
         $tujuan_upload = 'files';
 
         $file->move($tujuan_upload, $renameFile);
+        $berkas->move($tujuan_upload, $renameBerkas);
 
-        return redirect('book')->with('success', 'Data buku berhasil ditambah!');
+        return redirect('ebook')->with('success', 'Data Ebook berhasil ditambah!');
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(book $book)
+    public function show(Ebook $ebook)
     {
-
-
         $password = PasswordBook::all();
-        return view('user.show', [
-            'book' => $book,
+        return view('user.show_ebook', [
+            'book' => $ebook,
             'password' => $password[0]->password
         ]);
     }
@@ -84,11 +93,10 @@ class BookController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(book $book)
+    public function edit(Ebook $ebook)
     {
-
-        return view('admin.buku.edit', [
-            'book' => $book,
+        return view('admin.ebook.edit', [
+            'ebook' => $ebook,
             'categories' => Category::all()
         ]);
     }
@@ -96,26 +104,28 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, book $book)
+    public function update(Request $request, Ebook $ebook)
     {
         $rules = [
             'judul' => 'required|max:255',
             'penulis' => 'required|max:255',
             'tahun_terbit' => 'required|date',
             'category_id' => 'required',
-            'stok' => 'required',
             'deskripsi' => 'required|max:1000',
             'gambar' => 'max:2000',
             'berkas' => 'max:10000',
-            'kunci' => '',
-            'rak' => 'required'
+            'kunci' => ''
         ];
 
-        if ($request->id_buku != $book->id_buku) {
+        if ($request->id_buku != $ebook->id_buku) {
             $rules['id_buku'] = 'required|max:255|unique:books';
         }
 
         $validated = $request->validate($rules);
+
+        if ($request->kunci) {
+            $validated['kunci'] = 1;
+        }
 
         if ($request->file('gambar')) {
             $file = $request->file('gambar');
@@ -129,7 +139,7 @@ class BookController extends Controller
             $file->move($tujuan, $renameFile);
 
             // hapus file lama : 
-            File::delete('files/' . $book->gambar);
+            File::delete('files/' . $ebook->gambar);
         }
 
         if ($request->file('berkas')) {
@@ -143,61 +153,37 @@ class BookController extends Controller
 
             $berkas->move($tujuan, $renameBerkas);
 
-            File::delete('files/' . $book->berkas);
+            File::delete('files/' . $ebook->berkas);
         }
 
         try {
-            Book::where('id', $book->id)->update($validated);
+            Ebook::where('id', $ebook->id)->update($validated);
         } catch (\Throwable $th) {
-            return redirect('book')->with('error', 'Data gagal dirubah!');
+            return redirect('ebook')->with('error', 'Data gagal dirubah!');
         }
 
-        return redirect('book')->with('success', 'Data buku berhasil dirubah!');
+        return redirect('ebook')->with('success', 'Data ebook berhasil dirubah!');
 
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(book $book)
+    public function destroy(Ebook $ebook)
     {
-        Book::destroy($book->id);
+        Ebook::destroy($ebook->id);
 
-        File::delete('files/' . $book->gambar);
+        File::delete('files/' . $ebook->gambar);
 
-        return redirect('book')->with('success', 'Data buku berhasil dihapus!');
+        return redirect('ebook')->with('success', 'Data ebook berhasil dihapus!');
 
-    }
-
-    public function getCategories(Request $request)
-    {
-        return Book::where('category_id', $request->category_id)->get();
-    }
-
-    public function baca(book $book)
-    {
-        return view('user.baca', [
-            'book' => $book
-        ]);
-    }
-
-    public function changePassword(Request $request)
-    {
-
-        $validate = $request->validate([
-            'password' => 'required|max:50'
-        ]);
-
-        PasswordBook::find(1)->update($validate);
-
-        return back()->with('success', 'Password buku telah dirubah!');
     }
 
     public function cetak(Request $request)
     {
-        $data = book::with('category')->whereBetween('created_at', [$request->tanggal_awal, $request->tanggal_akhir])->latest()->get();
+        $data = Ebook::with('category')->whereBetween('created_at', [$request->tanggal_awal, $request->tanggal_akhir])->latest()->get();
 
-        return view('admin.buku.cetak', [
+        return view('admin.ebook.cetak', [
             'data' => $data,
             'tanggal_awal' => $request->tanggal_awal,
             'tanggal_akhir' => $request->tanggal_akhir

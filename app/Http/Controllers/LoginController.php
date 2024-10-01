@@ -22,11 +22,11 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->is_master) {
-                return redirect()->intended('/');
+            if (Auth::user()->role == 'siswa') {
+                return redirect()->intended('/siswa');
             }
 
-            return redirect()->intended('siswa');
+            return redirect()->intended('/');
         }
 
         return back()->with('loginFailed', 'Login Failed');

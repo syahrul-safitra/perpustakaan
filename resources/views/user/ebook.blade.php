@@ -45,7 +45,7 @@
 
         {{-- List Book --}}
         <div class="row" id="container-list-book">
-            @foreach ($books as $book)
+            @foreach ($ebooks as $book)
                 <div class="col-sm-1 col-md-3 col-lg-2 mb-3">
                     <div class="card" style="width: 100%;">
                         <img src="{{ asset('files/' . $book->gambar) }}" class="card-img-top" style="height:300px"
@@ -55,24 +55,22 @@
                                         class="badge badge-success">{{ $book->category->nama }}</span></a>
                             </p>
 
-
                             @php
                                 $parJudul = $book->judul;
-
                                 $parPenulis = $book->penulis;
 
                                 if (Str::length($parJudul) > 10) {
                                     $parJudul = Str::substr($parJudul, 0, 10) . '...';
                                 }
 
-                                if (Str::length($parPenulis) > 10) {
-                                    $parPenulis = Str::substr($parPenulis, 0, 10) . '...';
+                                if (Str::length($parPenulis) > 15) {
+                                    $parJudul = Str::substr($parPenulis, 0, 10) . '...';
                                 }
 
                             @endphp
                             <h5 class="card-title">{{ $parJudul }}</h5>
                             <p class="card-text">{{ $parPenulis }}</p>
-                            <a href="{{ url('siswa/book/' . $book->id) }}" class="btn btn-primary">Lihat</a>
+                            <a href="{{ url('ebook/' . $book->id) }}" class="btn btn-primary">Lihat</a>
                         </div>
                     </div>
                 </div>

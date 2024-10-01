@@ -15,4 +15,9 @@ class Category extends Model
     {
         return $this->hasMany(book::class);
     }
+
+    public function ebook()
+    {
+        return $this->hasMany(Ebook::class);
+    }
 }
