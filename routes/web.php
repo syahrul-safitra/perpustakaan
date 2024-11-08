@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BatasWaktuPeminjamanController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BookController;
@@ -56,8 +57,10 @@ Route::post('kepperpus/{user}', [AnggotaController::class, 'updateKeperpus'])->m
 // Peminjaman :
 Route::resource('pinjam', BorrowController::class)->middleware(['auth', 'isMaster']);
 Route::post('cetak/peminjaman', [BorrowController::class, 'cetak']);
+Route::post('pinjam_buku', [BorrowController::class, 'store'])->middleware('auth');
 
-
+Route::get('editpassword/{user}', [AnggotaController::class, 'editpassword'])->middleware('auth');
+Route::post('changepassword/{user}', [AnggotaController::class, 'changePassword'])->middleware('auth');
 
 // Siswa :
 Route::middleware(['isSiswa', 'isSiswa'])->group(function () {
@@ -91,6 +94,8 @@ Route::middleware(['isSiswa', 'isSiswa'])->group(function () {
 Route::get('end', function () {
     return Carbon::now()->format('Y');
 });
+
+Route::post('changebataswaktu', [BatasWaktuPeminjamanController::class, 'update'])->middleware('isAdmin');
 
 
 // Ressource Ebook : 

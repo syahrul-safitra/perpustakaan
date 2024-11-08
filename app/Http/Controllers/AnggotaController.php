@@ -281,4 +281,26 @@ class AnggotaController extends Controller
             'tanggal_akhir' => $request->tanggal_akhir
         ]);
     }
+
+    public function editPassword(User $user)
+    {
+        if ($user->role == 'Admin') {
+            return back();
+        }
+
+        return view('user.editpassword', [
+            'user' => $user
+        ]);
+    }
+
+    public function changePassword(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'password' => 'required|max:10|min:6'
+        ]);
+
+        $user->update($validated);
+
+        return back()->with('success', 'Password berhasil dirubah!');
+    }
 }

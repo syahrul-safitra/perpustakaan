@@ -63,6 +63,36 @@
                         </div>
 
 
+                        <button class="btn btn-warning" data-target="#modalBatasWaktu" data-toggle="modal">Batas
+                            Waktu</button>
+
+                        {{-- Modal cetak laporan :  --}}
+                        <div class="modal fade" id="modalBatasWaktu" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        {{-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> --}}
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form action="{{ url('changebataswaktu') }}" method="POST">
+                                        <div class="modal-body">
+                                            <p>Ubah batas waktu peminjman</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            @csrf
+                                            <input type="text" class="form-control" name="batas_waktu"
+                                                value="{{ $batas_waktu->batas_waktu }}" required>
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+
+
                     </div>
                     <div>
                         <form class="d-flex justify-content-between" action="">
@@ -150,7 +180,8 @@
                                                                 <form action="{{ url('book/' . $book->id) }}" method="POST">
                                                                     @csrf
                                                                     @method('DELETE')
-                                                                    <button type="submit" class="btn btn-danger">Hapus</button>
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Hapus</button>
                                                                 </form>
                                                             </div>
                                                         </div>

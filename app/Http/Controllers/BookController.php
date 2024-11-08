@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BatasWaktuPeminjaman;
 use App\Models\book;
 use App\Models\Category;
 use App\Models\PasswordBook;
@@ -19,7 +20,8 @@ class BookController extends Controller
         $password = PasswordBook::all();
         return view('admin.buku.index', [
             'books' => book::with('category')->cari(request('search'))->latest()->paginate(10),
-            'password' => $password[0]->password
+            'password' => $password[0]->password,
+            'batas_waktu' => BatasWaktuPeminjaman::first()
         ]);
     }
 
@@ -73,11 +75,11 @@ class BookController extends Controller
     public function show(book $book)
     {
 
-
         $password = PasswordBook::all();
         return view('user.show', [
             'book' => $book,
-            'password' => $password[0]->password
+            'password' => $password[0]->password,
+            'batas_waktu' => BatasWaktuPeminjaman::first()
         ]);
     }
 

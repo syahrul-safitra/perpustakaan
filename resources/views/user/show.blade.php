@@ -50,13 +50,13 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <p>Anda akan meminjam buku dengan judul {{ $book->judul }}, dan batas
-                                peminjaman tujuah hari
+                            <p>Anda akan meminjam buku dengan judul {{ $book->judul }}, dan batas waktu peminjaman
+                                {{ $batas_waktu->batas_waktu }} hari
                                 kedepan dan denda perhari Rp.5000, apakah anda setuju?</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Batal</button>
-                            <form action="{{ url('pinjam') }}" method="post">
+                            <form action="{{ url('pinjam_buku') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="book_id" value="{{ $book->id }}">
                                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">

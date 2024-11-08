@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\borrow;
 use App\Models\book;
+use App\Models\Ebook;
 use App\Models\User;
+use App\Models\BatasWaktuPeminjaman;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -37,13 +39,22 @@ class BorrowController extends Controller
     public function store(Request $request)
     {
 
+        $batasWaktu = BatasWaktuPeminjaman::first();
+
+        $batasWaktu = $batasWaktu->batas_waktu;
+
         $validated = $request->validate([
             'user_id' => 'required',
             'book_id' => 'required'
         ]);
         $tanggal_peminjaman = date('Y-m-d');
 
-        $tanggal_pengembalian = date('Y-m-d', strtotime('+6 day', strtotime($tanggal_peminjaman)));
+        $day = '+' . $batasWaktu . ' day';
+
+        $tanggal_pengembalian = date('Y-m-d', strtotime(
+            $day,
+            strtotime($tanggal_peminjaman)
+        ));
 
         $validated['tanggal_peminjaman'] = $tanggal_peminjaman;
         $validated['tanggal_pengembalian'] = $tanggal_pengembalian;
@@ -123,6 +134,7 @@ class BorrowController extends Controller
             'tanggal_dikembalikan' => 'required'
         ]);
 
+        DB::beginTransaction();
 
         try {
             $pinjam->denda = $validated['denda'];
@@ -134,7 +146,11 @@ class BorrowController extends Controller
 
             $pinjam->save();
             $book->save();
+
+            DB::commit();
         } catch (\Exception $e) {
+
+            DB::rollback();
             return back()->with('error', 'Data gagal dirubah!');
         }
 
@@ -160,6 +176,7 @@ class BorrowController extends Controller
             'peminjaman' => borrow::whereYear('tanggal_peminjaman', Carbon::now()->format('Y'))
                 ->whereMonth('tanggal_peminjaman', Carbon::now()->format('m'))->count(),
             'denda' => borrow::denda_bulan_ini(),
+            'ebook' => Ebook::all()->count()
         ]);
     }
 }

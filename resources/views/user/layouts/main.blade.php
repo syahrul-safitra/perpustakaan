@@ -59,6 +59,9 @@
                         <a class="nav-link" href="{{ url('peminjaman/' . auth()->user()->id) }}">Peminjaman</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url('editpassword/' . auth()->user()->id) }}">Ganti Password</a>
+                    </li>
+                    <li class="nav-item">
                         <form action="{{ url('logout') }}" method="POST">
                             @csrf
                             <button class="btn btn-warning">Logout</button>

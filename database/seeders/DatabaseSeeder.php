@@ -37,6 +37,10 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
         ]);
 
+        \App\Models\BatasWaktuPeminjaman::create([
+            'batas_waktu' => 5,
+        ]);
+
         // \App\Models\Category::create([
         //     'nama' => 'Sastra'
         // ]);
